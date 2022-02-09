@@ -7,6 +7,11 @@
   </head>
   <body>
     <h2>Kaspa Payload to Address</h2>
+    <div>
+      <p>
+      This small page can parse <em>some</em> payloads of coinbase transactions of kaspad. This is not a full implementation of kaspad script reader.
+      </p>
+    </div>
     <input type="text" class="form-control" id="payload" aria-describedby="payload" placeholder="Enter Payload">
     <input class="form-control" type="text" id="output" placeholder="Address" readonly>
 
@@ -16,7 +21,7 @@
     payload.addEventListener("change", event => {
       const address = payloadToAddress(event.target.value);
       const output = document.querySelector("#output");
-      if (address === event.target.value) output.value = "Failed parsing payload";
+      if (address === event.target.value && event.target.value !== "") output.value = "Failed parsing payload";
       else output.value = payloadToAddress(event.target.value);
     });
     </script>
