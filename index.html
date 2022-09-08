@@ -13,16 +13,46 @@
       </p>
     </div>
     <input type="text" class="form-control" id="payload" aria-describedby="payload" placeholder="Enter Payload">
-    <input class="form-control" type="text" id="output" placeholder="Address" readonly>
+    <input class="form-control" type="text" id="output-address" placeholder="Address" readonly>
+    <input class="form-control" type="text" id="output-miner" placeholder="Miner" readonly>
 
     <script src="./bech32.js"></script>
+    <script src="./block.js"></script>
     <script>
+
+    const clear = () => {
+      const outputAddress = document.querySelector("#output-address");
+      const outputMiner = document.querySelector("#output-miner");
+      outputAddress.value = "";
+      outputMiner.value = "";
+    }
+
+    const displayPayload = (payload) => {
+      const [address, miner] = parsePayload(payload);
+      const outputAddress = document.querySelector("#output-address");
+      const outputMiner = document.querySelector("#output-miner");
+      if (address === payload && payload !== "") {
+          outputAddress.value = "Failed parsing payload";
+          outputMiner.value = "";
+      }
+      else {
+        outputAddress.value = address;
+        outputMiner.value = miner;
+      }
+
+    }
+
     const payload = document.querySelector('#payload');
     payload.addEventListener("change", event => {
-      const address = payloadToAddress(event.target.value);
-      const output = document.querySelector("#output");
-      if (address === event.target.value && event.target.value !== "") output.value = "Failed parsing payload";
-      else output.value = payloadToAddress(event.target.value);
+      clear();
+      // Probably a block hash
+      if (event.target.value.length == 64) {
+        getCoinbase(event.target.value).then(displayPayload);
+      } else if (event.target.value.length > 64) {
+        displayPayload(event.target.value);
+      } else {
+        document.querySelector("#output-address").value = "Failed parsing payload";
+      }
     });
     </script>
   </body>

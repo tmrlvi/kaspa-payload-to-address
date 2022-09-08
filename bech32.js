@@ -61,8 +61,9 @@ const encodeAddress = (prefix, payload, version) => {
 }
 
 
-const payloadToAddress = (payload) => {
-    if (payload === null) return "";
+const parsePayload = (payload) => {
+    if (payload === null) return ["", ""];
+    
     let buffer = fromHex(payload);
     let version = buffer[16];
     const length = buffer[18];
@@ -74,7 +75,7 @@ const payloadToAddress = (payload) => {
     if (script[0] < 0x76) {
         const address_size = script[0];
         let address = script.slice(1, address_size+1);
-        return encodeAddress("kaspa", address, version);
+        return [encodeAddress("kaspa", address, version), String.fromCharCode(...buffer.slice(19+length, buffer.length))];
     }
-    return payload;
+    return [payload, ""];
 }
